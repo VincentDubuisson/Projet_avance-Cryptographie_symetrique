@@ -99,7 +99,7 @@ long genPrimeSophieGermain(long min,long max,int *cpt){
     (*cpt)++;
     num=num+2;
   }
-  return 2*num+1;
+  return num;
 }
 
 long seek_generator(long start,long p){
