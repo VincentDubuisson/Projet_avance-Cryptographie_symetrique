@@ -5,11 +5,18 @@ from threading import Thread
 
 # finction lecture parametre Diffie-hellman depuis un fichier 
 def lire_parametre(nomFichier):
+    l=[]
     with open(nomFichier,'r') as file :
-        params = file.readline()
-        print( params.split(":"))
-        p =str(params[0].split(":")[1].strip()) 
-        g =int(params[1].split(":")[1].strip())
+        for param in file:
+            l+=[param]
+        
+    
+    L1=l[0].split(":")
+    L2=l[1].split(":")
+    
+    p=int(L1[1].split("\n")[0])
+    g=int(L2[1].split("\n")[0])
+  
           
     return p , g
 
@@ -20,27 +27,27 @@ def puissance_mod_n(a,e,n):
 def alice(queue,p,g,a):
     A=puissance_mod_n(g,a,p)
     queue.put(A) #alice envoi A
-    print("alice envoi A = {A}")
+    print("alice envoi A =", A)
     B = queue.get() #alice recoit B
     shared_key = puissance_mod_n (B,a,p)
-    print("alice calcule la cle partager: {shared_key}")
+    print("alice calcule la cle partager:", shared_key)
 
 def bob(queue,p,g,b):
     A=queue.get()#bob recupere A
     B=puissance_mod_n(g,b,p)
     queue.put(B)
-    print("bob envoi B = {B}")
+    print("bob envoi B =", B)
     shared_key = puissance_mod_n (A,b,p)
-    print("bob calcule la cle partager: {shared_key}")
+    print("bob calcule la cle partager:",shared_key)
 
 def main(param_fichier):
     p,g=lire_parametre(param_fichier)
-    print("parametre : p =  {p} ,g = {g} ")
+    print("parametre : p =",  p ,"g =", g )
 
     #alice et bob choisissent des secret aleatoir 
-    a=random(1,p-1)
-    b=random(1,p-1)
-    print("alice choisie a = {a} et bob b={b}")
+    a=random.randint(1,p-1)
+    b=random.randint(1,p-1)
+    print("alice choisie a =", a ,"et bob b=",b)
 
 #creation file d'attente queue pour la comunication et thread pour l'execution de alice et bob en parallele
     queue=Queue()
