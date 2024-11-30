@@ -28,62 +28,62 @@ def puissance_mod_n(a,e,n):
 def alice(queue1,queue2,p,g,a):
     A=puissance_mod_n(g,a,p)
     queue1.put(A) #alice envoi A
-    print("alice envoi A =", A)
+    print("Alice envoie A =", A)
     while (True):
         B = list(queue2.queue) #alice recoit B 
         if (B != []):
             B=B[0]
-            print("alice a recu B :",B)
+            print("Alice a reçu B :",B)
             break       
     shared_key = puissance_mod_n (B,a,p)
-    print("alice calcule la cle partager:", shared_key)
+    print("Alice calcule la clé partagé:", shared_key)
     
 def bob(queue1,queue2,p,g,b):
    
     B=puissance_mod_n(g,b,p)
     queue2.put(B)
-    print("bob envoi B =", B)
+    print("Bob envoie B =", B)
     while (True):
         A=list(queue1.queue)#bob recupere A
         if (A !=[]):
             A=A[0]
-            print ("bob a recu A:",A)
+            print ("Bob a reçu A:",A)
             break
     shared_key = puissance_mod_n (A,b,p)
-    print("bob calcule la cle partager:",shared_key)
+    print("Bob calcule la clé partagé:",shared_key)
     
 
 def eve(queue1,queue2,p,g):
-    print(" eve connai les valeur p:",p," et g:",g)
-    print ("eve intersepte la comunication")
+    print("Eve connait les valeurs p:",p," et g:",g)
+    print ("Eve intercepte la communication")
     while (True):
         A=list(queue1.queue)#eve essai d'intercepter A
         if (A !=[]):
             A=A[0]
-            print ("eve intersepte A=",A)
+            print ("Eve intercepte A=",A)
             break
     while (True):
         B = list(queue2.queue) #eve essai d'intercepter B 
         if (B!=[]):
             B=B[0]
-            print("eve intersepte B=",B)
+            print("Eve intercepte B=",B)
             break 
     print("S = a+b et d = a-b")  
     S=log(A*B)/log(g)
     d= log(A/B)/log(g)
     print (S,d)
     
-    print ("eve est incapable de retrouver la cle partager, a ni b")
+    print ("Eve est incapable de retrouver la clé partagé a ni b")
 
 
 def main(param_fichier):
     p,g=lire_parametre(param_fichier)
-    print("parametre : p =",  p ,"g =", g )
+    print("paramètre : p =",  p ,"g =", g )
 
     #alice et bob choisissent des secret aleatoir 
     a=random.randint(1,p-1)
     b=random.randint(1,p-1)
-    print("alice choisie a =", a ,"et bob b=",b)
+    print("Alice choisie a =", a ,"et Bob b=",b)
 
 #creation file d'attente queue pour la comunication et thread pour l'execution de alice et bob en parallele
     queue1=Queue()
@@ -101,7 +101,7 @@ def main(param_fichier):
 
 if __name__ == "__main__":
     if len(sys.argv) <2:
-        print("usage : python3 dh_genkey.py <param_fichier>")
+        print("Usage : python3 dh_genkey.py <param_fichier>")
         sys.exit(1)
 
     param_fichier = sys.argv[2]
