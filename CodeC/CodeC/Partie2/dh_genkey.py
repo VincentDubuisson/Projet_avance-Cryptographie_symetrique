@@ -4,114 +4,138 @@ from queue import Queue
 from threading import Thread
 from math import log
 
-# finction lecture parametre Diffie-hellman depuis un fichier 
-def lire_parametre(nomFichier):
-    l=[]
-    with open(nomFichier,'r') as file :
+RED = '\033[31m'
+GREEN = '\033[32m'
+BLUE = '\033[34m'
+YELLOW = '\033[33m'
+RESET = '\033[0m'
+
+
+# fonction lecture parametre Diffie-hellman depuis un fichier 
+def read_parameter(file_name):
+    l = []
+    with open(file_name,'r') as file :
         for param in file:
-            l+=[param]
+            l += [param]
         
+    L1 = l[0].split(":")
+    L2 = l[1].split(":")
     
-    L1=l[0].split(":")
-    L2=l[1].split(":")
-    
-    p=int(L1[1].split("\n")[0])
-    g=int(L2[1].split("\n")[0])
+    p = int(L1[1].split("\n")[0])
+    g = int(L2[1].split("\n")[0])
   
-          
-    return p , g
+    return p, g
+
 
 #fct calcule a**e mod n
-def puissance_mod_n(a,e,n):
-    return pow(a,e,n)
+def pow_mod_n(a, e, n):
+    return pow(a, e, n)
 
-def alice(queue1,queue2,p,g,a):
-    A=puissance_mod_n(g,a,p)
+
+def alice(queue1, queue2, p, g, a):
+    A = pow_mod_n(g, a, p)
+    print(f"{GREEN}- Alice calcule A = ({g} ^ {a})[{p}] = {A}\n"
+    f"\n[ALICE]\np = {p}\ng = {g}\na = {a}\nA = {A}\n"
+    f"\n- Alice transmet A sur le réseaux {RESET}\n")
     queue1.put(A) #alice envoi A
-    print("Alice envoie A =", A)
+
     while (True):
         B = list(queue2.queue) #alice recoit B 
         if (B != []):
-            B=B[0]
-            print("Alice a reçu B :",B)
-            break       
-    shared_key = puissance_mod_n (B,a,p)
-    print("Alice calcule la clé partagé:", shared_key)
-    
-def bob(queue1,queue2,p,g,b):
-   
-    B=puissance_mod_n(g,b,p)
-    queue2.put(B)
-    print("Bob envoie B =", B)
-    while (True):
-        A=list(queue1.queue)#bob recupere A
-        if (A !=[]):
-            A=A[0]
-            print ("Bob a reçu A:",A)
+            B = B[0]
+            print(f"{GREEN}\n- Alice reçoit B\n"
+            f"\n[ALICE]\np = {p}\ng = {g}\na = {a}\nA = {A}\nB = {B} {RESET}\n")
             break
-    shared_key = puissance_mod_n (A,b,p)
-    print("Bob calcule la clé partagé:",shared_key)
+
+    secret_key = pow_mod_n(B, a, p)
+    print(f"{GREEN}- Alice calcule la clé secrète: ({B} ^ {a})[{p}] = {secret_key}\n"
+    f"\n[ALICE]\np = {p}\ng = {g}\na = {a}\nA = {A}\nB = {B}\nClé secrète = {secret_key} {RESET}\n")
     
 
-def eve(queue1,queue2,p,g):
-    print("Eve connait les valeurs p:",p," et g:",g)
-    print ("Eve intercepte la communication")
+def bob(queue1, queue2, p, g, b):
+    B = pow_mod_n(g, b, p)
+    print(f"{BLUE}- Bob calcule B = ({g} ^ {b})[{p}] = {B}\n"
+    f"\n[BOB]\np = {p}\ng = {g}\nb = {b}\nB = {B}\n"
+    f"\n- Bob transmet B sur le réseaux {RESET}\n")
+    queue2.put(B)
+
     while (True):
-        A=list(queue1.queue)#eve essai d'intercepter A
-        if (A !=[]):
-            A=A[0]
-            print ("Eve intercepte A=",A)
+        A = list(queue1.queue) #bob recupere A
+        if (A != []):
+            A = A[0]
+            print(f"{BLUE}- Bob reçoit A\n"
+            f"\n[BOB]\np = {p}\ng = {g}\nb = {b}\nB = {B}\nA = {A} {RESET}\n")
             break
+
+    secret_key = pow_mod_n(A, b, p)
+    print(f"{BLUE}- Bob calcule la clé secrète: ({A} ^ {b})[{p}] = {secret_key}\n"
+    f"\n[BOB]\np = {p}\ng = {g}\nb = {b}\nB = {B}\nA = {A}\nClé secrète = {secret_key}{RESET}\n")
+    
+
+def eve(queue1, queue2, p, g):
+    print(f"{RED}- Eve intercepte les communications\n"
+    f"\n[EVE]\np = {p}\ng = {g}{RESET}\n")
+
+    while (True):
+        A = list(queue1.queue) #eve essai d'intercepter A
+        if (A != []):
+            A = A[0]
+            print(f"{RED}- Eve intercepte A depuis le réseaux\n"
+            f"\n[EVE]\np = {p}\ng = {g}\nA = {A}{RESET}\n")
+            break
+
     while (True):
         B = list(queue2.queue) #eve essai d'intercepter B 
-        if (B!=[]):
-            B=B[0]
-            print("Eve intercepte B=",B)
+        if (B != []):
+            B = B[0]
+            print(f"{RED}- Eve intercepte B depuis le réseaux\n"
+            f"\n[EVE]\np = {p}\ng = {g}\nA = {A}\nB = {B}{RESET}\n")
             break 
-    print("S = a+b et d = a-b")  
-    S=log(A*B)/log(g)
-    d= log(A/B)/log(g)
-    print (S,d)
-    
-    print ("Eve est incapable de retrouver la clé partagé a ni b")
+
+    S = log(A * B) / log(g)
+    d = log(A / B) / log(g)
+    print(f"{RED}- Eve essaye de calculer la clé secrète\n"
+    f"S = a+b = log(A * B) / log(g) = {S}\nd = a-b = log(A / B) / log(g) = {d}\n"
+    f"\n- Eve est incapable de retrouver la clé secrète{RESET}\n")
 
 
-def main(param_fichier):
-    p,g=lire_parametre(param_fichier)
-    print("paramètre : p =",  p ,"g =", g )
+def main(param_file):
+    p, g = read_parameter(param_file)
+    print(f"{YELLOW}\n-----------------SYNTAXE-----------------\n"
+    f"[NOM]\nx = ...\ny = ...\n=> variables connu par NOM\n\n- NOM action\n=> action executé par NOM\n"
+    "-----------------------------------------\n"
+    f"\nParamètres: p = {p} et g = {g}{RESET}\n")
 
     #alice et bob choisissent des secret aleatoir 
-    a=random.randint(1,p-1)
-    b=random.randint(1,p-1)
-    print("Alice choisie a =", a ,"et Bob b=",b)
+    a = random.randint(1, p-1)
+    b = random.randint(1, p-1)
+    print(f"{GREEN}- Alice choisit a = {a}\n\n"
+    f"[ALICE]\np = {p}\ng = {g}\na = {a}\n"
+    f"{BLUE}\n- Bob choisit b = {b}\n\n"
+    f"[BOB]\np = {p}\ng = {g}\nb = {b}{RESET}\n")
 
-#creation file d'attente queue pour la comunication et thread pour l'execution de alice et bob en parallele
-    queue1=Queue()
-    queue2=Queue()
-    thread_alice=Thread(target=alice,args=(queue1,queue2,p,g,a))
-    thread_bob=Thread(target=bob,args=(queue1,queue2,p,g,b))
-    thread_eve=Thread(target =eve,args=(queue1,queue2,p,g))
-#demarage et attente fin execution des thread
+    #creation file d'attente queue pour la comunication et thread pour l'execution de alice et bob en parallele
+    queue1 = Queue()
+    queue2 = Queue()
+    thread_alice = Thread(target = alice, args = (queue1, queue2, p, g, a))
+    thread_bob = Thread(target = bob, args = (queue1, queue2, p, g, b))
+    thread_eve = Thread(target = eve, args = (queue1, queue2, p, g))
+
+    #demarage et attente fin execution des thread
+    thread_eve.start()
     thread_alice.start()
     thread_bob.start()
-    thread_eve.start()
-    thread_bob.join
-    thread_alice.join
     thread_eve.join()
+    thread_bob.join()
+    thread_alice.join()
+
+    print(f"{YELLOW}Alice et Bob connaissent ainsi la clé secrète.{RESET}\n")
+    
 
 if __name__ == "__main__":
-    if len(sys.argv) <2:
-        print("Usage : python3 dh_genkey.py <param_fichier>")
+    if len(sys.argv) < 2:
+        print("Usage : python3 dh_genkey.py <param_file>")
         sys.exit(1)
 
-    param_fichier = sys.argv[2]
-    main(param_fichier)
-
-
-
-
-
-    
-
-    
-
+    param_file = sys.argv[2]
+    main(param_file)
