@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 #include "dh_prime.h"
 
 #define RED "\x1B[31m"
@@ -16,19 +18,42 @@ void write_file(const char * file_name , long prime , long generator){
 
     fprintf(file , "p:%ld\ng:%ld\n", prime, generator);
     fclose(file);
-    printf("Parametre ecrit dans %s : p = %ld , g = %ld \n", file_name, prime, generator);
+
+    printf("Paramètres écrit dans %s : p = %ld , g = %ld \n", file_name, prime, generator);
 
     }
 
+void print_help() {
+    printf("Usage: dh_gen_group [-o output_file] [-h]\n");
+    printf("Options:\n");
+    printf("  -o output_file    Fichier de sortie où seront écrit les paramètres\n");
+    printf("  -h                Affiche l'aide\n");
+}
+
 int main (int argc , char * argv[]){
-    if (argc < 3){
-        printf("%sUsage : %s -o <fichier de sortie>\n%s", RED, argv[0], NRM);
-        exit(1);
+    int opt;
+    char *output_file = NULL;
+
+    // Analyse des options
+    while ((opt = getopt(argc, argv, "o:h")) != -1) {
+        switch (opt) {
+            case 'o':
+                output_file = optarg;
+                break;
+            case 'h':
+                print_help();
+                return 0;
+            default:
+                print_help();
+                return 1;
+        }
     }
 
     long min= 100000000;
     long max= 1000000000;
     int count = 0;
+
+    srand(time(NULL));
     long prime = genPrimeSophieGermain(min,max,&count);
     
     if (prime ==-1){
@@ -37,11 +62,13 @@ int main (int argc , char * argv[]){
     }
 
     //Cherche generateur pour le nombre premier 2
+    srand(time(NULL));
     long generator = seek_generator(2, prime); 
     if (generator == -1){
         printf("%sErreur recherche de generateur pour p %ld%s",RED, prime, NRM);
         exit(1);
     }
-    write_file(argv[2], prime, generator);
+
+    write_file(output_file, prime, generator);
     return 0;
 }

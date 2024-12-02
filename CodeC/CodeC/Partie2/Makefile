@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=c99 -Wextra -Wall -Werror -pedantic 
+CFLAGS=-std=gnu99 -Wextra -Wall -Werror -pedantic 
 LDFLAGS=-lm
 
 ECHO = @
