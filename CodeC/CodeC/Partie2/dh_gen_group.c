@@ -38,7 +38,7 @@ int main (int argc , char * argv[]){
     while ((opt = getopt(argc, argv, "o:h")) != -1) {
         switch (opt) {
             case 'o':
-                output_file = optarg;
+                output_file = argv[2];
                 break;
             case 'h':
                 print_help();
