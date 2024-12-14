@@ -4,14 +4,14 @@ ko='\e[00;31m';
 wipe='\e[00m';
 ok='\e[01;32m';
 
-BASE=../..
-TEST=./tests
+BASE=../../../CodeC/CodeC/Partie1
+TEST=tests
 RET=0
 
 function test_cipher_xor {
     RET=0
 
-    if [ -x $BASE/crypt_test ]
+    if [ -x $BASE/sym_crypt ]
     then
 
     rm -rf $TEST/crypted/
@@ -21,7 +21,7 @@ function test_cipher_xor {
     do
 	while read i
 	do
- 	    $BASE/crypt_test -i $TEST/ref/$i  -o $TEST/crypted/xor_${k}_${i} -k $k -m xor> /dev/null
+ 	    $BASE/sym_crypt -i $TEST/ref/$i  -o $TEST/crypted/xor_${k}_${i} -k $k -m xor> /dev/null
 	    diff $TEST/ref_crypted/xor_${k}_$i $TEST/crypted/xor_${k}_${i}  &>/dev/null
 	    RET=$?
 	    [ $RET -eq 0 ] && printf "\t%-12s [${ok}OK${wipe}]\n" "$i"
@@ -41,14 +41,14 @@ function test_decipher_xor {
     rm -rf $TEST/decrypted/
     mkdir $TEST/decrypted/
 
-    if [ -x $BASE/crypt_test ]
+    if [ -x $BASE/sym_crypt ]
     then
 
 	while read k
 	do
 	    while read i
 	    do
- 		$BASE/crypt_test -o $TEST/decrypted/xor_${k}_$i  -i $TEST/crypted/xor_${k}_${i} -k $k -m xor&> /dev/null
+ 		$BASE/sym_crypt -o $TEST/decrypted/xor_${k}_$i  -i $TEST/crypted/xor_${k}_${i} -k $k -m xor&> /dev/null
 		diff $TEST/ref/$i $TEST/decrypted/xor_${k}_${i}  &>/dev/null
 		RET=$?
 		[ $RET -eq 0 ] && printf "\t%-12s [${ok}OK${wipe}]\n" "$i"
@@ -63,7 +63,7 @@ function test_decipher_xor {
 function test_cipher_cbc {
     RET=0
 
-    if [ -x $BASE/crypt_test ]
+    if [ -x $BASE/sym_crypt ]
     then
 
     rm -rf $TEST/crypted/
@@ -73,7 +73,7 @@ function test_cipher_cbc {
     do
 	while read i
 	do
- 	    $BASE/crypt_test -i $TEST/ref/$i  -o $TEST/crypted/cbc_${k}_${i} -k $k -m cbc-crypt -v azertyuiopqsdfgh> /dev/null
+ 	    $BASE/sym_crypt -i $TEST/ref/$i  -o $TEST/crypted/cbc_${k}_${i} -k $k -m cbc-crypt -v $BASE/iv.txt> /dev/null
 	    diff $TEST/ref_crypted/cbc_${k}_$i $TEST/crypted/cbc_${k}_${i}  &>/dev/null
 	    RET=$?
 	    [ $RET -eq 0 ] && printf "\t%-12s [${ok}OK${wipe}]\n" "$i"
@@ -93,14 +93,14 @@ function test_decipher_cbc {
     rm -rf $TEST/decrypted/
     mkdir $TEST/decrypted/
 
-    if [ -x $BASE/crypt_test ]
+    if [ -x $BASE/sym_crypt ]
     then
 
 	while read k
 	do
 	    while read i
 	    do
- 		$BASE/crypt_test -o $TEST/decrypted/cbc_${k}_$i  -i $TEST/crypted/cbc_${k}_${i} -k $k -m cbc-uncrypt -v azertyuiopqsdfgh&> /dev/null
+ 		$BASE/sym_crypt -o $TEST/decrypted/cbc_${k}_$i  -i $TEST/crypted/cbc_${k}_${i} -k $k -m cbc-uncrypt -v $BASE/iv.txt&> /dev/null
 		diff -b $TEST/ref/$i $TEST/decrypted/cbc_${k}_${i}  &>/dev/null
 		RET=$?
 		[ $RET -eq 0 ] && printf "\t%-12s [${ok}OK${wipe}]\n" "$i"

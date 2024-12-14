@@ -51,6 +51,7 @@ int main (int argc , char * argv[]){
 
     long min= 100000000;
     long max= 1000000000;
+    //ajouter com
     int count = 0;
 
     srand(time(NULL));

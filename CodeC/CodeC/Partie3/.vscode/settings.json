@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "list.h": "c",
+        "assert.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c",
+        "type_traits": "c",
+        "ctype.h": "c",
+        "pthread.h": "c",
+        "break_code_c1.h": "c",
+        "time.h": "c",
+        "stdbool.h": "c"
+    }
+}

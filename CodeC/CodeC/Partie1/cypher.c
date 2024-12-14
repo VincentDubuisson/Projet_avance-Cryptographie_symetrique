@@ -30,88 +30,91 @@ void write_hex(FILE *output, char *block, size_t block_size) {
 
 // Fonction de chiffrement CBC
 void cbc_crypt(FILE *input, FILE *output, char *key, char *iv) {
-    char block[BLOCK_SIZE];
-    char previous_block[BLOCK_SIZE];
-    char crypted[BLOCK_SIZE];
 
-    memcpy(previous_block, iv, BLOCK_SIZE);
+  char block[BLOCK_SIZE];
+  char previous_block[BLOCK_SIZE];
+  char crypted[BLOCK_SIZE];
 
-    size_t bytesRead;
-    while ((bytesRead = fread(block, 1, BLOCK_SIZE, input)) > 0) {
-        char xor_result[BLOCK_SIZE];
+  // Initialiser le bloc précédent avec le vecteur d'initialisation
+  memcpy(previous_block, iv, BLOCK_SIZE);
 
-        fprintf(stdout, "Block clair : ");
-        print_block_as_hex(block, bytesRead);
+  size_t bytesRead;
+  while ((bytesRead = fread(block, 1, BLOCK_SIZE, input)) > 0) {
+      // Si le dernier bloc est plus petit, ajouter du padding
+      if (bytesRead < BLOCK_SIZE) {
+          int padding = BLOCK_SIZE - bytesRead;
+          memset(block + bytesRead, padding, padding);
+      }
 
-        fprintf(stdout, "Block précédent : ");
-        print_block_as_hex(previous_block, BLOCK_SIZE);
+      // Afficher le bloc clair (utilisé pour déboguer)
+      printf("Block clair : ");
+      print_block_as_hex(block, BLOCK_SIZE);
 
-        // Si le dernier bloc est plus court, remplir avec des zéros
-        if (bytesRead < BLOCK_SIZE) {
-            memset(block + bytesRead, 0, BLOCK_SIZE - bytesRead);
-        }
+      // 1. XOR du bloc avec le bloc précédent
+      char xor_result[BLOCK_SIZE];
+      xor(block, previous_block, BLOCK_SIZE, xor_result);
 
-        // 1. XOR du block avec le block précédent
-        xor(block, previous_block, BLOCK_SIZE, xor_result);
+      // 2. Chiffrement du résultat avec la clé
+      xor(xor_result, key, BLOCK_SIZE, crypted);
 
-        // 2. Chiffrement du résultat avec la clé
-        xor(xor_result, key, BLOCK_SIZE, crypted);
+      // Afficher le bloc chiffré (utilisé pour déboguer)
+      printf("Bloc chiffré : ");
+      print_block_as_hex(crypted, BLOCK_SIZE);
 
+      // Écrire le bloc chiffré dans le fichier de sortie
+      fwrite(crypted, 1, BLOCK_SIZE, output);
 
-        // Afficher le résultat du XOR
-        fprintf(stdout, "Bloc chiffré : ");
-        print_block_as_hex(crypted, BLOCK_SIZE);
+      // Mettre à jour le bloc précédent pour la prochaine itération
+      memcpy(previous_block, crypted, BLOCK_SIZE);
+  }
 
-        // Écrire le bloc chiffré dans le fichier de sortie
-        fwrite(crypted, 1, bytesRead, output);
-        fprintf(stdout, "\n");
-
-        memcpy(previous_block, crypted, BLOCK_SIZE);
-    }
-
-    if (ferror(input)) {
-        perror("Erreur lors de la lecture du fichier d'entrée");
-    }
+  if (ferror(input)) {
+      perror("Erreur lors de la lecture du fichier d'entrée");
+  }
 }
 
 // Fonction de déchiffrement CBC
 void cbc_uncrypt(FILE *input, FILE *output, char *key, char *iv) {
 
-    char block[BLOCK_SIZE];
-    char previous_block[BLOCK_SIZE];
-    char decrypted[BLOCK_SIZE];
+  char block[BLOCK_SIZE];
+  char previous_block[BLOCK_SIZE];
+  char decrypted[BLOCK_SIZE];
 
-    memcpy(previous_block, iv, BLOCK_SIZE);
+  // Initialiser le bloc précédent avec le vecteur d'initialisation
+  memcpy(previous_block, iv, BLOCK_SIZE);
 
-    size_t bytesRead;
-    while ((bytesRead = fread(block, 1, BLOCK_SIZE, input)) > 0) {
-        char xor_result[BLOCK_SIZE];
+  size_t bytesRead;
+  while ((bytesRead = fread(block, 1, BLOCK_SIZE, input)) > 0) {
+      // Afficher le bloc chiffré (utilisé pour déboguer)
+      printf("Block chiffré : ");
+      print_block_as_hex(block, BLOCK_SIZE);
 
-        printf("Block chiffré : ");
-        print_block_as_hex(block, bytesRead);
+      // 1. Déchiffrement du bloc avec la clé
+      char xor_result[BLOCK_SIZE];
+      xor(block, key, BLOCK_SIZE, xor_result);
 
-        printf("Block précédent : ");
-        print_block_as_hex(previous_block, BLOCK_SIZE);
+      // 2. XOR avec le bloc précédent pour obtenir le texte clair
+      xor(xor_result, previous_block, BLOCK_SIZE, decrypted);
 
-        // 1. Déchiffrement du bloc avec la clé
-        xor(block, key, BLOCK_SIZE, xor_result);
+      // Afficher le bloc déchiffré (utilisé pour déboguer)
+      printf("Bloc déchiffré : ");
+      print_block_as_hex(decrypted, BLOCK_SIZE);
 
-        // 2. XOR avec le bloc précédent pour obtenir le texte clair
-        xor(xor_result, previous_block, BLOCK_SIZE, decrypted);
+      // Si c'est le dernier bloc, enlever le padding
+      if (feof(input)) {
+          int padding = decrypted[BLOCK_SIZE - 1];
+          if (padding > 0 && padding <= BLOCK_SIZE) {
+              fwrite(decrypted, 1, BLOCK_SIZE - padding, output); // Écrire sans le padding
+          }
+      } else {
+          fwrite(decrypted, 1, BLOCK_SIZE, output); // Écrire le bloc déchiffré
+      }
 
-        // Afficher le résultat du XOR
-        printf("Bloc déchiffré : ");
-        print_block_as_hex(decrypted, BLOCK_SIZE);
+      // Mettre à jour le bloc précédent pour la prochaine itération
+      memcpy(previous_block, block, BLOCK_SIZE);
+  }
 
-        // Écrire le bloc déchiffré dans le fichier de sortie
-        fwrite(decrypted, 1, bytesRead, output);
-        printf("\n");
-
-        // Mettre à jour le bloc précédent
-        memcpy(previous_block, block, BLOCK_SIZE);
-    }
-
-    if (ferror(input)) {
-        perror("Erreur lors de la lecture du fichier d'entrée");
-    }
+  if (ferror(input)) {
+      perror("Erreur lors de la lecture du fichier d'entrée");
+  }
 }

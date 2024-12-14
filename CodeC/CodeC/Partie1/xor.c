@@ -13,6 +13,7 @@ void xor(char *msg, char* key, int msg_length, char *crypted) {
       return;
   }
 
+  // Ajouter un caractère nul à la fin de la clé si elle n'est pas déjà présente
   int key_length = strlen(key);
   if (key_length == 0) {
       fprintf(stderr, "Erreur : La clé ne peut pas être vide\n ");
@@ -22,8 +23,8 @@ void xor(char *msg, char* key, int msg_length, char *crypted) {
   for (int i = 0; i < msg_length; i++) {
       crypted[i] = msg[i] ^ key[i % key_length]; // Réalisation du XOR pour chaque caractère du message
   }
-
   crypted[msg_length] = '\0';
+
 }
 
 /*
