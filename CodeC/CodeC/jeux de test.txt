@@ -1,0 +1,37 @@
+help
+
+gen-key 8
+
+gen-key 7
+
+list-keys
+
+encrypt ../../../script/script/CRYPT/tests/ref/moyen.txt crypt_cbc_moyen.txt yAJESXHr cbc rGb78klOHJy54yhG
+
+list-keys
+
+decrypt crypt_cbc_moyen.txt uncrypt_moyen.txt yAJESXHr cbc rGb78klOHJy54yhG
+
+encrypt ../../../script/script/CRYPT/tests/ref/chinois-utf-8.rtf crypt_xor_chin.rtf WAWMNfUAD xor
+
+decrypt crypt_xor_chin.rtf uncrypt_xor_chin.rtf WAWMNfUAD xor
+
+encrypt ../../../script/script/CRYPT/tests/ref/chaton.jpg crypt_chaton_mask.jpg null mask
+
+del-key WAWNfUAD
+
+encrypt moyen.txt crypt_xor_moyen.txt 0DIW569 xor
+
+crack crypt_xor_moyen.txt result_crack_xor_moyen.txt 7
+
+crack ../../../script/script/CRYPT/tests/ref/bovary-isolatin1.txt result_crack.txt 5
+
+encrypt ../../../script/script/CRYPT/tests/ref/bovary-isolatin1.txt Clef1_bovary.txt Clef1 xor
+
+crack Clef1_bovary.txt resultat.txt 5
+
+crack Clef1_miseAuPointCrypt.txt resultat.txt 5
+
+crack 1234_msg2.txt resultat.txt 4
+
+quit

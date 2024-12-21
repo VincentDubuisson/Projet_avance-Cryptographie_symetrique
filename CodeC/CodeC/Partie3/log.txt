@@ -1,0 +1,154 @@
+17/12/2024 19:54:30 - help: Consultation de l'aide.
+
+17/12/2024 20:01:19 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/moyen.txt
+Fichier de sortie: chif1.txt
+
+17/12/2024 20:05:45 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/moyen.txt
+Fichier de sortie: chif1.txt
+
+17/12/2024 20:06:29 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/moyen.txt
+Fichier de sortie: chif1.txt
+
+17/12/2024 20:18:13 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/moyen.txt
+Fichier de sortie: chif1.txt
+
+17/12/2024 20:18:45 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/moyen.txt
+Fichier de sortie: chif1.txt
+
+17/12/2024 20:39:36 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/clair2.txt
+Fichier de sortie: chif2.txt
+
+17/12/2024 20:41:07 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/clair2.txt
+Fichier de sortie: chif2.txt
+
+17/12/2024 21:11:26 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/moyen.txt
+Fichier de sortie: chif1.txt
+
+17/12/2024 21:12:13 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: clair1.txt
+Fichier de sortie: chif1.txt
+
+17/12/2024 21:12:38 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: clair2.txt
+Fichier de sortie: chif2.txt
+
+17/12/2024 21:16:06 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/clair2.txt
+Fichier de sortie: chif2.txt
+
+17/12/2024 21:45:02 - help: Consultation de l'aide.
+
+17/12/2024 21:53:50 - encrypt: Chiffrement effectué
+Méthode: xor
+Fichier d'entrée: bovary-isolatin1.txt
+Fichier de sortie: Clef1_bovary.txt
+
+17/12/2024 21:54:24 - encrypt: Chiffrement effectué
+Méthode: xor
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/bovary-isolatin1.txt
+Fichier de sortie: Clef1_bovary.txt
+
+17/12/2024 22:10:00 - encrypt: Chiffrement effectué
+Méthode: xor
+Fichier d'entrée: moyen.txt
+Fichier de sortie: crypt_xor_moyen.txt
+
+17/12/2024 22:21:00 - crack: Clef1_miseAuPointCrypt.txt
+Clé trouvée: resultat.txt
+
+17/12/2024 22:27:59 - crack: 1234_msg2.txt
+Clé trouvée: resultat.txt
+
+17/12/2024 22:29:57 - crack: 1234_msg2.txt
+Clé trouvée: resultat.txt
+
+17/12/2024 22:30:11 - crack: 1234_msg2.txt
+Clé trouvée: resultat.txt
+
+17/12/2024 22:30:16 - crack: 1234_msg2.txt
+Clé trouvée: resultat.txt
+
+17/12/2024 22:30:23 - crack: 1234_msg2.txt
+Clé trouvée: resultat.txt
+
+18/12/2024 10:01:07 - help: Consultation de l'aide.
+
+18/12/2024 10:01:28 - gen-key: Génération d'une clef
+Clé générée: F86zgKdb
+
+18/12/2024 10:01:57 - list-keys: Consultation des clés disponibles
+Liste des clés disponibles:
+Clef1 (utilisée: oui)
+0DIW569 (utilisée: oui)
+F86zgKdb (utilisée: non)
+
+
+18/12/2024 10:02:38 - encrypt: Chiffrement effectué
+Méthode: cbc
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/moyen.txt
+Fichier de sortie: crypt_cbc_moyen.txt
+
+18/12/2024 10:03:10 - list-keys: Consultation des clés disponibles
+Liste des clés disponibles:
+Clef1 (utilisée: oui)
+0DIW569 (utilisée: oui)
+F86zgKdb (utilisée: oui)
+
+
+18/12/2024 10:03:35 - decrypt: Déchiffrement effectué
+Méthode: cbc
+Fichier d'entrée: crypt_cbc_moyen.txt
+Fichier de sortie: uncrypt_moyen.txt
+
+18/12/2024 10:04:36 - encrypt: Chiffrement effectué
+Méthode: xor
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/chinois-utf-8.rtf
+Fichier de sortie: crypt_xor_chin.rtf
+
+18/12/2024 10:05:38 - decrypt: Déchiffrement effectué
+Méthode: xor
+Fichier d'entrée: crypt_xor_chin.rtf
+Fichier de sortie: uncrypt_xor_chin.rtf
+
+18/12/2024 10:06:13 - encrypt: Chiffrement effectué
+Méthode: mask
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/chaton.jpg
+Fichier de sortie: crypt_chaton_mask.jpg
+
+18/12/2024 10:06:46 - del-key: Suppression d'une clef
+
+18/12/2024 10:07:17 - encrypt: Chiffrement effectué
+Méthode: xor
+Fichier d'entrée: moyen.txt
+Fichier de sortie: crypt_xor_moyen.txt
+
+18/12/2024 10:08:57 - encrypt: Chiffrement effectué
+Méthode: xor
+Fichier d'entrée: ../../../script/script/CRYPT/tests/ref/bovary-isolatin1.txt
+Fichier de sortie: Clef1_bovary.txt
+
+18/12/2024 10:09:33 - crack: Clef1_miseAuPointCrypt.txt
+Clé trouvée: resultat.txt
+
+18/12/2024 10:10:10 - crack: 1234_msg2.txt
+Clé trouvée: resultat.txt
+

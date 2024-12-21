@@ -10,6 +10,7 @@
         "pthread.h": "c",
         "break_code_c1.h": "c",
         "time.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "xor.h": "c"
     }
 }
